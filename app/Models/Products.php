@@ -10,4 +10,10 @@ class Products extends Model
 {
     /** @use HasFactory<\Database\Factories\ProductsFactory> */
     use HasFactory, softDeletes;
+
+    protected $fillable = ['product_name','product_description','inStock','price'];
+
+    public function categories(){
+        return $this->belongsToMany(Categories::class);
+    }
 }
