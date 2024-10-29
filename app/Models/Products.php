@@ -14,6 +14,11 @@ class Products extends Model
     protected $fillable = ['product_name','product_description','inStock','price'];
 
     public function categories(){
-        return $this->belongsToMany(Categories::class);
+        return $this->belongsToMany(
+            Categories::class, // The related model
+            'prod_cats',       // The name of the pivot table
+            'product_id',      // Foreign key on the pivot table for the product
+            'category_id'      // Foreign key on the pivot table for the category
+        );
     }
 }

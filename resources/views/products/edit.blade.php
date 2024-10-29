@@ -29,6 +29,15 @@
                    class="w-full p-3 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500" />
         </div>
 
+        <div class="mb-4">
+            <label for="category_name" class="block text-gray-600 font-medium mb-1">Select Category:</label>
+            <select name="categories[]" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" id="category_name">
+                @foreach($categories as $category)
+                    <option value="{{ $category->id }}">{{ $category->category_name }}</option>
+                @endforeach
+            </select>
+        </div>
+
         <div class="flex space-x-4">
             <button type="submit" class="w-full py-3 px-4 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50">
                 Update
