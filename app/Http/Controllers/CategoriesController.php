@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\Categories;
-use App\Models\Products;
 use Illuminate\Http\Request;
 
 class CategoriesController extends Controller
@@ -23,7 +22,8 @@ class CategoriesController extends Controller
      */
     public function create()
     {
-        //
+        return view('categories.create');
+
     }
 
     /**
@@ -31,7 +31,14 @@ class CategoriesController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'category_name' => 'required|string|max:60',
+            ]);
+        Categories::create([
+            'category_name' => $request->category_name,
+        ]);
+        return redirect()->route('categories.index')
+            ->with('success', 'Item created successfully.');
     }
 
     /**
@@ -47,7 +54,8 @@ class CategoriesController extends Controller
      */
     public function edit(string $id)
     {
-        //
+        $category = Categories::findOrFail($id);
+        return view('categories.edit', compact('category'));
     }
 
     /**
@@ -55,7 +63,16 @@ class CategoriesController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        $category = Categories::findOrFail($id);
+
+        $request->validate([
+            'category_name' => 'required|string|max:60',
+        ]);
+
+        $category-> update($request->all());
+
+        return redirect()->route('categories.index')
+            ->with('success', 'Item updated successfully.');
     }
 
     /**

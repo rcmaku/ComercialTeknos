@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Products;
 use Illuminate\Http\Request;
+use League\CommonMark\Delimiter\Processor\DelimiterProcessorInterface;
 
 class ProductsController extends Controller
 {
@@ -22,7 +23,8 @@ class ProductsController extends Controller
      */
     public function create()
     {
-        //
+        return view('products.create');
+
     }
 
     /**
@@ -30,7 +32,21 @@ class ProductsController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'product_name' => 'required|string|max:60',
+            'product_description' => 'required|string|max:255',
+            'inStock' => 'required|integer',
+            'price' => 'required|string|',
+
+        ]);
+        Products::create([
+            'product_name' => $request->product_name,
+            'product_description' => $request->product_description,
+            'inStock' => $request->inStock,
+            'price' => $request->price,
+        ]);
+        return redirect()->route('products.index')
+            ->with('success', 'Item created successfully.');
     }
 
     /**
@@ -46,7 +62,8 @@ class ProductsController extends Controller
      */
     public function edit(string $id)
     {
-        //
+        $product =Products::findOrFail($id);
+        return view('products.edit', compact('product'));
     }
 
     /**
@@ -54,14 +71,28 @@ class ProductsController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        $product = Products::findOrFail($id);
+
+        $request->validate([
+            'product_name' => 'required|string|max:60',
+            'product_description' => 'required|string|max:255',
+            'inStock' => 'required|integer',
+            'price' => 'required|string|',
+        ]);
+
+        $product-> update($request->all());
+
+        return redirect()->route('products.index')
+            ->with('success', 'Item updated successfully.');
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(Products $product)
     {
-        //
+        $product->delete();
+        return redirect()->route('products.index')
+            ->with('success', 'Entry deleted successfully.');
     }
 }
