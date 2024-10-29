@@ -9,4 +9,6 @@ class ProdCats extends Model
 {
     /** @use HasFactory<\Database\Factories\ProdCatsFactory> */
     use HasFactory;
+
+    protected $fillable=['product_id','category_id'];
 }

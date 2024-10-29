@@ -34,6 +34,15 @@
             </div>
 
             <div class="mb-4">
+                <label for="category_name" class="block text-gray-600 font-medium mb-1">Select Category:</label>
+                <select name="categories[]" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" id="category_name">
+                    @foreach($categories as $category)
+                        <option value="{{ $category->id }}">{{ $category->category_name }}</option>
+                    @endforeach
+                </select>
+            </div>
+
+            <div class="mb-4">
                 <label for="price" class="block text-gray-600 font-medium mb-1">Precio:</label>
                 <input type="number" step="0.01" name="price" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" id="price" value="{{ old('price') }}">
             </div>

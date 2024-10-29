@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Categories;
 use App\Models\Products;
+use App\Models\ProdCats;
 use Illuminate\Http\Request;
 use League\CommonMark\Delimiter\Processor\DelimiterProcessorInterface;
 
@@ -23,7 +25,8 @@ class ProductsController extends Controller
      */
     public function create()
     {
-        return view('products.create');
+        $categories = Categories::all();
+        return view('products.create', compact('categories'));
 
     }
 
@@ -32,21 +35,35 @@ class ProductsController extends Controller
      */
     public function store(Request $request)
     {
+        // Validate the incoming request data
         $request->validate([
             'product_name' => 'required|string|max:60',
             'product_description' => 'required|string|max:255',
             'inStock' => 'required|integer',
-            'price' => 'required|string|',
-
+            'price' => 'required|string',
+            'categories' => 'required|array',
+            'categories.*' => 'integer|exists:categories,id'
         ]);
-        Products::create([
+
+        // Create the product and save it to a variable
+        $product = Products::create([
             'product_name' => $request->product_name,
             'product_description' => $request->product_description,
             'inStock' => $request->inStock,
             'price' => $request->price,
         ]);
+
+        // Loop through each selected category and insert into ProdCats
+        foreach ($request->categories as $id) {
+            ProdCats::create([
+                'product_id' => $product->id,  // Use the product's ID from the newly created product
+                'category_id' => $id,
+            ]);
+        }
+
+        // Redirect to the products index page with a success message
         return redirect()->route('products.index')
-            ->with('success', 'Item created successfully.');
+            ->with('success', 'Item created successfully with categories.');
     }
 
     /**
