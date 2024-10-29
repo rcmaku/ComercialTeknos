@@ -80,7 +80,8 @@ class ProductsController extends Controller
     public function edit(string $id)
     {
         $product =Products::findOrFail($id);
-        return view('products.edit', compact('product'));
+        $categories = Categories::all();
+        return view('products.edit', compact('product', 'categories'));
     }
 
     /**
@@ -94,10 +95,21 @@ class ProductsController extends Controller
             'product_name' => 'required|string|max:60',
             'product_description' => 'required|string|max:255',
             'inStock' => 'required|integer',
-            'price' => 'required|string|',
+            'price' => 'required|string',
+            'categories' => 'required|array',
+            'categories.*' => 'integer|exists:categories,id'
         ]);
 
-        $product-> update($request->all());
+
+        $product->update([
+            'product_name' => $request->product_name,
+            'product_description' => $request->product_description,
+            'inStock' => $request->inStock,
+            'price' => $request->price,
+        ]);
+
+        // Sync the categories in the ProdCats pivot table
+        $product->categories()->sync($request->categories);
 
         return redirect()->route('products.index')
             ->with('success', 'Item updated successfully.');
