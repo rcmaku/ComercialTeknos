@@ -15,7 +15,7 @@ class ProductsController extends Controller
      */
     public function index()
     {
-        $products = Products::all();
+        $products = Products::whereNull('deleted_at')->get();
 
         return view('products.index', compact('products'));
     }
